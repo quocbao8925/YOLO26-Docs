@@ -26,20 +26,20 @@
 
 ## Các Khái niệm Chính
 
-### Suy luận End-to-End Không cần NMS
+### [Suy luận End-to-End Không cần NMS](https://github.com/quocbao8925/YOLO26-Docs/blob/main/Key_Concepts/01_End_to_End_NMS_Free.md)
 
 Các kiến trúc YOLO trước đây phụ thuộc nhiều vào Non-Maximum Suppression (NMS) như một bước hậu xử lý để loại bỏ các dự đoán trùng lặp. NMS làm tăng độ trễ (latency) và đòi hỏi phải tinh chỉnh siêu tham số (hyperparameter). YOLO26 giới thiệu một bộ dự đoán end-to-end gốc giúp loại bỏ hoàn toàn NMS. Điều này dẫn đến thời gian suy luận trên CPU nhanh hơn tới 43% và đơn giản hóa việc triển khai trên các thiết bị biên (edge devices).
 
-### Loại bỏ Distribution Focal Loss (DFL)
+### [Loại bỏ Distribution Focal Loss (DFL)](https://github.com/quocbao8925/YOLO26-Docs/blob/main/Key_Concepts/02_DFL_Removal.md)
 
 DFL được sử dụng trong các phiên bản trước (như YOLOv8) để dự đoán phân phối xác suất cho tọa độ bounding box. YOLO26 loại bỏ DFL, quay trở lại phương pháp hồi quy trực tiếp các tọa độ bounding box rõ ràng. Sự đơn giản hóa này giúp giảm khối lượng tính toán và đảm bảo việc xuất mô hình (export) sang các định dạng như ONNX, TensorRT, và CoreML sạch sẽ và gọn gàng hơn.
 
-### ProgLoss và STAL
+### [ProgLoss và STAL](https://github.com/quocbao8925/YOLO26-Docs/blob/main/Key_Concepts/03_ProgLoss_and_STAL.md)
 
 - **ProgLoss (Progressive Loss Balancing):** Tự động điều chỉnh trọng số của các thành phần hàm mất mát khác nhau trong suốt quá trình huấn luyện để ngăn chặn tình trạng overfitting vào các lớp (classes) chiếm đa số.
 - **STAL (Small-Target-Aware Label Assignment):** Giải quyết trực tiếp thách thức trong việc phát hiện các đối tượng nhỏ. Phương pháp này đảm bảo tối thiểu bốn anchor cho các đối tượng nhỏ hơn 8x8 pixel, đảm bảo chúng luôn đóng góp vào hàm mất mát trong quá trình huấn luyện.
 
-### Bộ tối ưu hóa MuSGD
+### [Bộ tối ưu hóa MuSGD](https://github.com/quocbao8925/YOLO26-Docs/blob/main/Key_Concepts/04_MuSGD_Optimizer.md)
 
 YOLO26 giới thiệu **MuSGD**, một bộ tối ưu hóa lai kết hợp giữa Stochastic Gradient Descent (SGD) với các bản cập nhật kiểu Muon (thường được sử dụng trong các Mô hình Ngôn ngữ Lớn - LLMs). Điều này cho phép mô hình hội tụ nhanh hơn, mượt mà hơn và ổn định hơn.
 
@@ -55,17 +55,17 @@ Backbone xử lý hình ảnh đầu vào để trích xuất các đặc trưng
 
 | Khối (Block) | Loại | Mô tả |
 |---|---|---|
-| **b0** | Conv | Conv 3x3, Stride 2 (P1/2) |
-| **b1** | Conv | Conv 3x3, Stride 2 (P2/4) |
-| **b2** | C3k2 | CSP Bottleneck với 2 tích chập (convolutions) |
-| **b3** | Conv | Conv 3x3, Stride 2 (P3/8) |
-| **b4** | C3k2 | Trích xuất đặc trưng sâu hơn |
-| **b5** | Conv | Conv 3x3, Stride 2 (P4/16) |
-| **b6** | C3k2 | Sử dụng `c3k=True` cho các phép toán với kernel lớn hơn |
-| **b7** | Conv | Conv 3x3, Stride 2 (P5/32) |
-| **b8** | C3k2 | Trích xuất đặc trưng mức độ cao (high-level) |
-| **b9** | SPPF | Spatial Pyramid Pooling Fast, **được cập nhật thêm một kết nối shortcut** |
-| **b10** | C2PSA | Giới thiệu cơ chế tự chú ý (self-attention) với PSA Block để nắm bắt ngữ cảnh toàn cục |
+| **b0** | [Conv](https://github.com/quocbao8925/YOLO26-Docs/blob/main/Architecture/Backbone/01_Conv.md) | Conv 3x3, Stride 2 (P1/2) |
+| **b1** | [Conv](https://github.com/quocbao8925/YOLO26-Docs/blob/main/Architecture/Backbone/01_Conv.md) | Conv 3x3, Stride 2 (P2/4) |
+| **b2** | [C3k2](https://github.com/quocbao8925/YOLO26-Docs/blob/main/Architecture/Backbone/02_C3k2.md) | CSP Bottleneck với 2 tích chập (convolutions) |
+| **b3** | [Conv](https://github.com/quocbao8925/YOLO26-Docs/blob/main/Architecture/Backbone/01_Conv.md) | Conv 3x3, Stride 2 (P3/8) |
+| **b4** | [C3k2](https://github.com/quocbao8925/YOLO26-Docs/blob/main/Architecture/Backbone/02_C3k2.md) | Trích xuất đặc trưng sâu hơn |
+| **b5** | [Conv](https://github.com/quocbao8925/YOLO26-Docs/blob/main/Architecture/Backbone/01_Conv.md) | Conv 3x3, Stride 2 (P4/16) |
+| **b6** | [C3k2](https://github.com/quocbao8925/YOLO26-Docs/blob/main/Architecture/Backbone/02_C3k2.md) | Sử dụng `c3k=True` cho các phép toán với kernel lớn hơn |
+| **b7** | [Conv](https://github.com/quocbao8925/YOLO26-Docs/blob/main/Architecture/Backbone/01_Conv.md) | Conv 3x3, Stride 2 (P5/32) |
+| **b8** | [C3k2](https://github.com/quocbao8925/YOLO26-Docs/blob/main/Architecture/Backbone/02_C3k2.md) | Trích xuất đặc trưng mức độ cao (high-level) |
+| **b9** | [SPPF](https://github.com/quocbao8925/YOLO26-Docs/blob/main/Architecture/Backbone/03_SPPF.md) | Spatial Pyramid Pooling Fast, **được cập nhật thêm một kết nối shortcut** |
+| **b10** | [C2PSA](https://github.com/quocbao8925/YOLO26-Docs/blob/main/Architecture/Backbone/04_C2PSA.md) | Giới thiệu cơ chế tự chú ý (self-attention) với PSA Block để nắm bắt ngữ cảnh toàn cục |
 
 ### Neck (Phần cổ)
 
@@ -73,14 +73,14 @@ Neck tổng hợp các đặc trưng từ backbone thông qua việc upsample (t
 
 | Khối (Block) | Loại | Mô tả |
 |---|---|---|
-| **up1** | Upsample | Upsampling 2x bằng Nearest Neighbor cho khối `b10` |
-| **h13** | Concat + C3k2 | Nối `up1(b10)` với `b6` |
-| **up2** | Upsample | Upsampling 2x bằng Nearest Neighbor cho khối `h13` |
-| **h16** | Concat + C3k2 | Nối `up2(h13)` với `b4` → **Xuất ra feature map P3** |
-| **h17** | Conv | Conv 3x3, Stride 2 để downsampling |
-| **h19** | Concat + C3k2 | Nối `h17` với `h13` → **Xuất ra feature map P4** |
-| **h20** | Conv | Conv 3x3, Stride 2 để downsampling |
-| **h22** | Concat + C3k2 | Nối `h20` với `b10`. Tích hợp `attn=True` (PSA Block) → **Xuất ra feature map P5** |
+| **up1** | [Upsample](https://github.com/quocbao8925/YOLO26-Docs/blob/main/Architecture/Neck/01_Upsample_Concat.md) | Upsampling 2x bằng Nearest Neighbor cho khối `b10` |
+| **h13** | [Concat](https://github.com/quocbao8925/YOLO26-Docs/blob/main/Architecture/Neck/01_Upsample_Concat.md) + [C3k2](https://github.com/quocbao8925/YOLO26-Docs/blob/main/Architecture/Backbone/02_C3k2.md) | Nối `up1(b10)` với `b6` |
+| **up2** | [Upsample](https://github.com/quocbao8925/YOLO26-Docs/blob/main/Architecture/Neck/01_Upsample_Concat.md) | Upsampling 2x bằng Nearest Neighbor cho khối `h13` |
+| **h16** | [Concat](https://github.com/quocbao8925/YOLO26-Docs/blob/main/Architecture/Neck/01_Upsample_Concat.md) + [C3k2](https://github.com/quocbao8925/YOLO26-Docs/blob/main/Architecture/Backbone/02_C3k2.md) | Nối `up2(h13)` với `b4` → **Xuất ra feature map P3** |
+| **h17** | [Conv](https://github.com/quocbao8925/YOLO26-Docs/blob/main/Architecture/Backbone/01_Conv.md) | Conv 3x3, Stride 2 để downsampling |
+| **h19** | [Concat](https://github.com/quocbao8925/YOLO26-Docs/blob/main/Architecture/Neck/01_Upsample_Concat.md) + [C3k2](https://github.com/quocbao8925/YOLO26-Docs/blob/main/Architecture/Backbone/02_C3k2.md) | Nối `h17` với `h13` → **Xuất ra feature map P4** |
+| **h20** | [Conv](https://github.com/quocbao8925/YOLO26-Docs/blob/main/Architecture/Backbone/01_Conv.md) | Conv 3x3, Stride 2 để downsampling |
+| **h22** | [Concat](https://github.com/quocbao8925/YOLO26-Docs/blob/main/Architecture/Neck/01_Upsample_Concat.md) + [C3k2](https://github.com/quocbao8925/YOLO26-Docs/blob/main/Architecture/Backbone/02_C3k2.md) | Nối `h20` với `b10`. Tích hợp `attn=True` (PSA Block) → **Xuất ra feature map P5** |
 
 ### Detection Head (Đầu phát hiện)
 
@@ -98,7 +98,7 @@ Mỗi head bao gồm:
 
 ## Huấn luyện YOLO26
 
-### Chiến lược Gán Nhãn Kép (Dual Assignment Strategy)
+### [Chiến lược Gán Nhãn Kép (Dual Assignment Strategy)](https://github.com/quocbao8925/YOLO26-Docs/blob/main/Architecture/Head/01_Dual_Assignment.md)
 
 Lấy cảm hứng từ YOLOv10, YOLO26 sử dụng chiến lược gán nhãn kép trong quá trình huấn luyện. Nó sử dụng cả phương pháp gán one-to-many truyền thống (nơi nhiều anchor có thể khớp với một ground truth) và phương pháp gán one-to-one.
 - Nhánh one-to-many cung cấp sự giám sát dày đặc (dense supervision).
